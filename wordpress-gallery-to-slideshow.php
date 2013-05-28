@@ -9,7 +9,7 @@
 * License: GPL2
 * -------------------------------------------------------------------------------- */
 
-function roots_gallery($attr) {
+function gallery_to_slideshow($attr) {
   $post = get_post();
 
   static $instance = 0;
@@ -96,7 +96,24 @@ function roots_gallery($attr) {
 
   return $output;
 }
-if (current_theme_supports('bootstrap-gallery')) {
-  remove_shortcode('gallery');
-  add_shortcode('gallery', 'roots_gallery');
-}
+
+
+/* ------------------------------------------------------------------------
+ * Remove WP´s default gallery shortcode and add the re-written one instead
+ * ------------------------------------------------------------------------ */
+remove_shortcode('gallery');
+add_shortcode('gallery', 'gallery_to_slideshow');
+
+
+/* ------------------------------------------- 
+ * Remove the now unnecessary gallery settings
+ * ------------------------------------------- */
+function gts_remove_gallery_settings() {
+    print '
+        &lt;style type="text/css">
+            #gallery-settings *{
+            display:none;
+            }
+        &lt;/style>';
+};
+add_action( 'admin_head_media_upload_gallery_form', 'gts_remove_gallery_settings' );
