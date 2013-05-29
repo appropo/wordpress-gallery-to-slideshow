@@ -9,6 +9,28 @@
 * License: GPL2
 * -------------------------------------------------------------------------------- */
 
+
+if ( !defined('GTS_PLUGIN_URL') ) {
+  define('GTS_PLUGIN_URL', plugins_url( '/', __FILE__));
+};
+
+
+/* --------------------------------------------
+ * Enqueue styles and scripts for the slideshow
+ * -------------------------------------------- */
+function gts_enqueue_files() {
+  wp_register_script( 'nivo-slider-script', GTS_PLUGIN_URL . 'scripts/jquery.nivo.slider.pack.js', array('jquery'), false, false );
+  wp_enqueue_script( 'nivo-slider-script' );
+
+  wp_register_style( 'nivo-slider-style', GTS_PLUGIN_URL . 'styles/nivo-slider.css', false, false, 'all' );
+  wp_enqueue_style( 'nivo-slider-style' );
+};
+add_action( 'wp_enqueue_scripts', 'gts_enqueue_files' );
+
+
+/* ---------------------------------------------------
+ * Main function to re-write the shortcode for gallery
+ * --------------------------------------------------- */
 function gallery_to_slideshow($attr) {
   $post = get_post();
 
@@ -87,10 +109,8 @@ function gallery_to_slideshow($attr) {
   $captions = '';
 
   foreach ($attachments as $id => $attachment) {
-    $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
-    
-    $bla = wp_get_attachment_image_src($id, $size);
-    $link = $bla[0];
+    $attachment_array = wp_get_attachment_image_src($id, $size);
+    $link             = $attachment_array[0];
 
     if ( trim($attachment->post_excerpt) ) {
 
@@ -119,7 +139,16 @@ remove_shortcode('gallery');
 add_shortcode('gallery', 'gallery_to_slideshow');
 
 
-/* ------------------------------------------- 
- * Remove the now unnecessary gallery settings
- * ------------------------------------------- */
+/* --------------------------------------------------------- 
+ * Remove the unnecessary gallery settings from gallery view
+ * --------------------------------------------------------- */
+function remove_gallery_settings() {
+  echo '<style type="text/css">.gallery-settings *{ display:none; }</style>';
+};
+add_action( 'admin_print_styles', 'remove_gallery_settings' );  
+
+
+
+
+
 
