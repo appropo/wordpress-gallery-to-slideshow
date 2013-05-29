@@ -79,20 +79,34 @@ function gallery_to_slideshow($attr) {
     return $output;
   }
 
-  $output = '<ul class="thumbnails gallery">';
+  /* -----------------------------
+   * Create the new slideshow code
+   * ----------------------------- */
+  $i        = 0;
+  $images   = '';
+  $captions = '';
 
-  $i = 0;
   foreach ($attachments as $id => $attachment) {
     $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
+    
+    $bla = wp_get_attachment_image_src($id, $size);
+    $link = $bla[0];
 
-    $output .= '<li>' . $link;
-    if (trim($attachment->post_excerpt)) {
-      $output .= '<div class="caption hidden">' . wptexturize($attachment->post_excerpt) . '</div>';
+    if ( trim($attachment->post_excerpt) ) {
+
+      $images   .= '<img src="' . $link . '" data-thumb="' . $link . '" alt="" title="#caption_' . $i . '"/>';
+      $captions .= '<div id="caption_' . $i . '" class="nivo-html-caption">' . wptexturize($attachment->post_excerpt) . '</div>';
+
+    } else {
+
+      $images   .= '<img src="' . $link . '" data-thumb="' . $link . '" alt=""/>';
+
     }
-    $output .= '</li>';
-  }
 
-  $output .= '</ul>';
+    $i++;
+  };
+
+  $output = '<div class="slider-wrapper"><div id="slider" class="nivoSlider">' . $images . '</div>' . $captions . '</div>';
 
   return $output;
 }
