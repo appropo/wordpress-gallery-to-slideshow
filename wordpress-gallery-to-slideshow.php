@@ -18,14 +18,14 @@ if ( !defined('GTS_PLUGIN_URL') ) {
 /* --------------------------------------------
  * Enqueue styles and scripts for the slideshow
  * -------------------------------------------- */
-function gts_enqueue_files() {
+/*function gts_enqueue_files() {
   wp_register_script( 'nivo-slider-script', GTS_PLUGIN_URL . 'scripts/jquery.nivo.slider.pack.js', array('jquery'), false, false );
   wp_enqueue_script( 'nivo-slider-script' );
 
   wp_register_style( 'nivo-slider-style', GTS_PLUGIN_URL . 'styles/nivo-slider.css', false, false, 'all' );
   wp_enqueue_style( 'nivo-slider-style' );
 };
-add_action( 'wp_enqueue_scripts', 'gts_enqueue_files' );
+add_action( 'wp_enqueue_scripts', 'gts_enqueue_files' );*/
 
 
 /* ---------------------------------------------------
@@ -109,24 +109,15 @@ function gallery_to_slideshow($attr) {
   $captions = '';
 
   foreach ($attachments as $id => $attachment) {
-    $attachment_array = wp_get_attachment_image_src($id, $size);
+    $attachment_array = wp_get_attachment_image_src($id, 'large');
     $link             = $attachment_array[0];
 
-    if ( trim($attachment->post_excerpt) ) {
-
-      $images   .= '<img src="' . $link . '" data-thumb="' . $link . '" alt="" title="#caption_' . $i . '"/>';
-      $captions .= '<div id="caption_' . $i . '" class="nivo-html-caption">' . wptexturize($attachment->post_excerpt) . '</div>';
-
-    } else {
-
-      $images   .= '<img src="' . $link . '" data-thumb="' . $link . '" alt=""/>';
-
-    }
+    $images .= '<img src="' . $link . '" data-thumb="' . $link . '" alt="" title="' . wptexturize($attachment->post_excerpt) . '"/>';      
 
     $i++;
   };
 
-  $output = '<div class="slider-wrapper"><div id="slider" class="nivoSlider">' . $images . '</div>' . $captions . '</div>';
+  $output = '<div class="slideshow-wrapper"><div class="slider-wrapper theme-kd"><div class="ribbon"></div><div id="slider" class="nivoSlider">' . $images . '</div></div></div>';
 
   return $output;
 }
