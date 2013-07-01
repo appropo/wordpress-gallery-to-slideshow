@@ -111,8 +111,9 @@ function gallery_to_slideshow($attr) {
   foreach ($attachments as $id => $attachment) {
     $attachment_array = wp_get_attachment_image_src($id, 'large');
     $link             = $attachment_array[0];
+    $description      = ( empty($attachment->post_excerpt) ? " " : wptexturize($attachment->post_excerpt) );
 
-    $images .= '<img src="' . $link . '" data-thumb="' . $link . '" alt="" title="' . wptexturize($attachment->post_excerpt) . '"/>';      
+    $images .= '<img src="' . $link . '" data-thumb="' . $link . '" alt="" title="' . $description . '"/>';      
 
     $i++;
   };
